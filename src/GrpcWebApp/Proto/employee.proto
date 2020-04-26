@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcWebApp.Proto.Employee";
+
+package employeeService;
+
+service EmployeeService {
+  rpc SelectAll (Empty) returns (Employees);
+  rpc SelectById (EmployeeFilter) returns (Employee);
+  rpc Insert (Employee) returns (Result);
+  rpc Update (Employee) returns (Result);
+  rpc Delete (EmployeeFilter) returns (Result);
+}
+
+message Empty {
+}
+
+message Result {
+    string message = 1;
+}
+
+message Employee {
+    int32 employeeId = 1;
+    string firstName = 2;
+    string lastName = 3;
+}
+
+message Employees {
+    repeated Employee EmployeesList = 1;
+}
+
+message EmployeeFilter {
+    int32 employeeId = 1;
+}
