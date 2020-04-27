@@ -1,11 +1,11 @@
 ﻿import { Employee, EmployeeFilter, Empty, Employees, Result } from './employee_pb';
-import { EmployeeCRUDClient } from './employee_grpc_web_pb';
+import { EmployeeServiceClient } from './employee_grpc_web_pb';
 import * as grpcWeb from 'grpc-web';
 
 async function insertEmployeeAsync() {
     var HEADERS = { 'content-type': 'application/grpc', 'Host': 'grpc' }
 
-    var employeeService = new EmployeeCRUDClient(window.location.origin);
+    var employeeService = new EmployeeServiceClient(window.location.origin);
     
     var request = new Employee();
 
@@ -18,7 +18,7 @@ async function insertEmployeeAsync() {
 }
 
  function selectAllEmployees(callback) {
-    var employeeService = new EmployeeCRUDClient(window.location.origin);
+     var employeeService = new EmployeeServiceClient(window.location.origin);
 
     var request = new Empty();
 
