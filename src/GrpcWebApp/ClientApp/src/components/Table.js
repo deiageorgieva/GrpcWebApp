@@ -2,10 +2,18 @@
 
 class Table extends Component {
     constructor(props) {
-        super(props) //since we are extending class Table so we have to use super in order to override Component class constructor
-        this.state = { //state is by default an object
-            employees: [{ employeeid: 1, firstname: "testtt", lastname: "blaa"}]
+        super(props)
+        this.state = { 
+            employees: this.props.employees,
+            selected: {},
+            selectAll: 0,
         }
+
+        this.toggleRow = this.toggleRow.bind(this);
+    }
+
+    toggleRow = () => {
+
     }
 
     renderTableData() {
@@ -13,6 +21,7 @@ class Table extends Component {
             const { employeeid, firstname, lastname } = employee //destructuring
             return (
                 <tr key={employeeid}>
+                    <td>{employeeid}</td>
                     <td>{firstname}</td>
                     <td>{lastname}</td>
                 </tr>
@@ -23,14 +32,13 @@ class Table extends Component {
     renderTableHeader() {
         let header = Object.keys(this.state.employees[0])
         return header.map((key, id) => {
-            return <th key={id}>{key.toUpperCase()}</th>
+            return <th key={id}>{key.toLowerCase()}</th>
         })
     }
 
     render() {
         return (
             <div>
-                <h1 id='title'>React Dynamic Table</h1>
                 <table id='employees'>
                     <tbody>
                         <tr>{this.renderTableHeader()}</tr>

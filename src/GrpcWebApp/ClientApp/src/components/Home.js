@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { insertEmployeeAsync, selectAllEmployees } from '../proto/client.js'
-import { Employee, EmployeeFilter, Empty, Employees, Result } from '../proto/employee_pb';
-import { EmployeeServiceClient } from '../proto/employee_grpc_web_pb';
+import * as grpcClient from '../proto/client.js';
 import { Table } from './Table.js';
+import { CreateEmployeeForm } from './CreateEmployeeForm.js';
 
 export class Home extends Component {
     static displayName = Home.name;
@@ -12,7 +11,8 @@ export class Home extends Component {
         this.state = {
             error: null,
             employees: [],
-            showComponent: false
+            showEmployeeTable: false,
+            showCreateEmployeeForm: false,
         };
     }
 
@@ -22,45 +22,31 @@ export class Home extends Component {
     render() {
         return (
             <div>
-            <h1 id="tabelLabel" >Employees</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-                <button onClick={() => this.handleClick()}>Click Me</button>
-                {this.state.showComponent && <Table employees={this.state.employees} />}
+            <h1 id="pageLabel" >Employees</h1>
+                <button onClick={() => this.handleCreateEmployee()}>Create new employee</button>
+
+                <div>
+                    {this.state.showCreateEmployeeForm && <CreateEmployeeForm />}
+                </div>
+
+                <button onClick={() => this.handleListEmployees()}>List employees</button>
+
+                <div>
+                    {this.state.showEmployeeTable && <Table employees={this.state.employees} />}
+                </div>
             </div>
         );
     }
 
-
-    getEmployees = ()=> {
-        console.log('Start getEmployees');
-
-        var employeeService = new EmployeeServiceClient(window.location.origin);
-        var request = new Empty();
-
-        return new Promise(async (fulfill, reject) => {
-            await employeeService.selectAll(request, {}, (err, response) => {
-                if (err !== null) {
-                    console.log('Error code: ' + err);
-                    reject(err);
-                }
-                else {
-                    console.log('Getting employees: ' + response.toObject().employeeslistList);
-                    fulfill(response.toObject().employeeslistList);
-                }
-            })
-        });
-    }
-
-     handleClick() {
-        console.log('Start handle click');
-
-         this.getEmployees()
+     handleListEmployees = () => {
+         grpcClient.getEmployees()
              .then(employeesList => {
                  console.log(employeesList);
-                 this.setState({ employees: employeesList }, () => { this.setState({ showComponent: true}) });
-            });
+                 this.setState({ employees: employeesList }, () => { this.setState({ showEmployeeTable: true }) });
+             });
+    }
 
-         console.log(this.state.employees[0]);
-         console.log('End handle click');
+    handleCreateEmployee = () => {
+        this.setState({ showCreateEmployeeForm: !this.state.showCreateEmployeeForm })
     }
 }
